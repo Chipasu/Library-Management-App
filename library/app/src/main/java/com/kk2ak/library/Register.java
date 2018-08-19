@@ -27,9 +27,10 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity {
 
-    EditText etName,etPassword,etMail;
+    EditText etName, etPassword, etMail;
     TextView errorText;
     Button btnRegister;
+    TextView tvLogin;
 
     private static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
@@ -37,20 +38,19 @@ public class Register extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try
-        {
+        try {
             this.getSupportActionBar().hide();
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e){}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        etName=findViewById(R.id.etName);
-        etPassword=findViewById(R.id.etPassword);
-        etMail=findViewById(R.id.etMail);
-        btnRegister=findViewById(R.id.btnRegister);
-        errorText=findViewById(R.id.regError);
-
+        etName = findViewById(R.id.etName);
+        etPassword = findViewById(R.id.etPassword);
+        etMail = findViewById(R.id.etMail);
+        btnRegister = findViewById(R.id.btnRegister);
+        errorText = findViewById(R.id.regError);
+        tvLogin = findViewById(R.id.tvLogin);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,11 +60,11 @@ public class Register extends AppCompatActivity {
                 progress.setMessage("Wait while loading...");
                 progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
                 progress.show();
-                String username = etName.getText().toString();
-                String password = etPassword.getText().toString();
-                String email = etMail.getText().toString();
+                final String username = etName.getText().toString();
+                final String password = etPassword.getText().toString();
+                final String email = etMail.getText().toString();
                 if (username.length() <= 3 || username.length() > 20) {
-                    errorText.setText("Invalid username");
+                    errorText.setText("Invalid Library ID");
                     progress.dismiss();
                     return;
                 }
@@ -80,8 +80,8 @@ public class Register extends AppCompatActivity {
                     progress.dismiss();
                     return;
                 }
-                String url = getString(R.string.url)+"/library/register.php";
-                Map<String, String> params= new HashMap<String, String>();
+                String url = getString(R.string.url) + "/library/register.php";
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("username", username);
                 params.put("email", email);
                 params.put("password", password);
@@ -90,11 +90,12 @@ public class Register extends AppCompatActivity {
                             @Override
                             public void onResponse(JSONObject response) {
                                 // the response is already constructed as a JSONObject!
-                                Log.i("response",response.toString());
+                                Log.i("response", response.toString());
                                 try {
                                     response.getBoolean("success");
                                     progress.dismiss();
                                     Intent i1 = new Intent(Register.this, Welcome.class);
+                                    i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(i1);
                                     return;
                                 } catch (JSONException e) {
@@ -109,16 +110,10 @@ public class Register extends AppCompatActivity {
                             public void onErrorResponse(VolleyError error) {
                                 errorText.setText("Registration failed");
                                 progress.dismiss();
-                                Log.i("error",error.getMessage());
+                                Log.i("error", error.getMessage());
                                 return;
                             }
                         }) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
-
-                        return params;
-                    }
                 };
 
                 Volley.newRequestQueue(Register.this).add(jsonRequest);
@@ -126,6 +121,15 @@ public class Register extends AppCompatActivity {
 
             }
         });
+        tvLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i1 = new Intent(Register.this, MainActivity.class);
+                i1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i1);
 
+
+            }
+        });
     }
 }

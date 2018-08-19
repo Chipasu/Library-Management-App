@@ -1,14 +1,17 @@
 package com.kk2ak.library;
 
-
-import java.util.Random;
-
 public class BookDetails {
+    public String bookid;
     public String genre;
     public String name;
-    private String[] genreList={"Science fiction","Romance","Mystery"};
-    BookDetails(String name) {
-        this.name=name;
-        this.genre=genreList[new Random().nextInt(genreList.length)];
+    public String author;
+    public String imageURL;
+
+    BookDetails(String name, String genre, String author, String imageURL, String bookid) {
+        this.bookid = bookid;
+        this.name = name;
+        this.genre = genre;
+        this.author = author;
+        this.imageURL = imageURL;
     }
 }

@@ -39,9 +39,8 @@ if (isset($input['username']) && isset($input['password']) && isset($input['emai
 $conn = mysqli_connect('localhost', 'r1234', 'myPass', 'mccProj');
 mysqli_set_charset($conn, 'utf8');
 
-$prep     = mysqli_prepare($conn, 'INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES (?,?, "https://kaustubhk.com/")');
-$password = password_hash($input['password'], PASSWORD_DEFAULT, ['cost' => 9]);
-mysqli_stmt_bind_param($prep, 'ss', $input['username'], $password);
+$prep = mysqli_prepare($conn, 'INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES (?,?, "https://kaustubhk.com/")');
+mysqli_stmt_bind_param($prep, 'ss', $input['username'], $input['password']);
 mysqli_execute($prep);
 mysqli_close($conn);
 echo json_encode(['success' => true]);
